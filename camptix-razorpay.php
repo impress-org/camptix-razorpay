@@ -1,13 +1,14 @@
 <?php
 /**
  * Plugin Name: CampTix RazorPay Payment Gateway
- * Plugin URI:
+ * Plugin URI: https://github.com/WordImpress/CampTix-Razorpay
  * Description: RazorPay Payment Gateway for CampTix
- * Author: Ravinder Kumar
- * Author URI:
+ * Author: WordImpress
+ * Author URI: https://wordimpress.com:
  * Version: 0.1
- * License: GPLv2 or later
  * Text Domain: camptix-razorpay
+ * Domain Path: /languages
+ * GitHub Plugin URI: https://github.com/WordImpress/Give-Razorpay
  */
 
 // Exit if access directly.
