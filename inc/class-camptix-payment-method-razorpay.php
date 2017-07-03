@@ -197,14 +197,14 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	 */
 	public function get_merchant_credentials() {
 		$merchant = array(
-			'key_id'      => $this->options['test_key_id'],
-			'key_secret'  => $this->options['test_key_secret'],
+			'key_id'     => $this->options['test_key_id'],
+			'key_secret' => $this->options['test_key_secret'],
 		);
 
 		if ( ! $this->options['sandbox'] ) {
 			$merchant = array(
-				'key_id'      => $this->options['live_key_id'],
-				'key_secret'  => $this->options['live_key_secret'],
+				'key_id'     => $this->options['live_key_id'],
+				'key_secret' => $this->options['live_key_secret'],
 			);
 		}
 
@@ -392,7 +392,10 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	}
 
 	/**
+	 * Process payment return.
 	 *
+	 * @since  0.2
+	 * @access public
 	 */
 	function payment_return() {
 		/* @var  CampTix_Plugin $camptix */
