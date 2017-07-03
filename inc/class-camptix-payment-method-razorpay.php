@@ -119,6 +119,13 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 			);
 		}
 
+		if ( $receipt_id = get_post_meta( $attendee->ID, 'tix_receipt_id', true ) ) {
+			$rows[] = array(
+				__( 'Razorpay Receipt ID', 'camptix-razorpay-' ),
+				$receipt_id,
+			);
+		}
+
 		return $rows;
 	}
 
@@ -200,13 +207,14 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		$coupon_id    = esc_attr( $_POST['tix_coupon'] );
 
 		// Order info.
-		$order = $this->razorpay_order_info( $tickets_info, $coupon_id );
+		$order      = $this->razorpay_order_info( $tickets_info, $coupon_id );
+		$receipt_id = uniqid( 'camtix-razorpay' );
 
 		// Creates order
 		$api   = $this->get_razjorpay_api();
 		$order = $api->order->create(
 			array(
-				'receipt'         => '123',
+				'receipt'         => uniqid( 'camtix-razorpay' ),
 				'amount'          => $order['total'] * 100,
 				'currency'        => 'INR',
 				'payment_capture' => true,
@@ -214,8 +222,9 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		);
 
 		echo sprintf(
-			'<input type="hidden" name="razorpay_order_id" value="%s">',
-			$order->id
+			'<input type="hidden" name="razorpay_order_id" value="%s"><input type="hidden" name="razorpay_receipt_id" value="%s">',
+			$order->id,
+			$receipt_id
 		);
 
 		return $form_heading;
@@ -440,6 +449,7 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 
 		$payment_token  = ( isset( $_REQUEST['tix_payment_token'] ) ) ? trim( $_REQUEST['tix_payment_token'] ) : '';
 		$transaction_id = esc_attr( $_GET['transaction_id'] );
+		// $receipt_id     = esc_attr( $_GET['receipt_id'] );
 
 		// Bailout.
 		if ( empty( $payment_token ) || empty( $transaction_id ) ) {
@@ -467,6 +477,11 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		if ( empty( $attendees ) ) {
 			return;
 		}
+
+		// Add receipt id to attendees.
+		// foreach ( $attendees as $attendee ) {
+		// 	update_post_meta( $attendee->ID, 'tix_receipt_id', $receipt_id );
+		// }
 
 		// Reset attendees.
 		$attendee = reset( $attendees );
@@ -543,7 +558,7 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		}
 
 		// Get coupon detail.
-		if( ! empty( $coupon_id ) ) {
+		if ( ! empty( $coupon_id ) ) {
 			// Get coupon.
 			$coupon_id = $wpdb->get_var(
 				$wpdb->prepare(
@@ -554,7 +569,7 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 
 			// Get coupon info.
 			if ( ! empty( $coupon_id ) ) {
-				$coupon = get_post( $coupon_id ) ;
+				$coupon            = get_post( $coupon_id );
 				$coupon_percentage = get_post_meta( $coupon->ID, 'tix_discount_percent', true );
 				$coupon_price      = get_post_meta( $coupon->ID, 'tix_discount_price', true );
 			}
