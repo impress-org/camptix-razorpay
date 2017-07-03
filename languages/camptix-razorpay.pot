@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CampTix-Razorpay\n"
-"Report-Msgid-Bugs-To: https://github.com/ravinderk/CampTix-Razorpay/issues/new\n"
+"Report-Msgid-Bugs-To: https://github.com/WordImpress/CampTix-Razorpay/issues/new\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
