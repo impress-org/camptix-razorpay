@@ -461,10 +461,93 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	}
 
 	/**
+	 * Check if razorpay enbale or not
+	 *
+	 * @since  0.2
+	 * @access public
+	 *
 	 * @return bool
 	 */
 	public function is_gateway_enable() {
 		return isset( $this->camptix_options['payment_methods'][ $this->id ] );
+	}
+
+
+	/**
+	 * Get razorpay API object
+	 *
+	 * @since  0.2
+	 * @access private
+	 *
+	 * @return Razorpay\Api\Api
+	 */
+	private function get_razjorpay_api() {
+		$merchant = $this->get_merchant_credentials();
+
+		return new Api( $merchant['key_id'], $merchant['key_secret'] );
+	}
+
+	/**
+	 * Array of selected ticket and there quantity
+	 * key:value ticket_id:quantity
+	 *
+	 * @since  0.2
+	 * @access pricate
+	 *
+	 * @param array  $tickets
+	 * @param string $coupon_id
+	 *
+	 * @return array
+	 */
+	private function razorpay_order_info( $tickets, $coupon_id ) {
+		/* @var  CampTix_Plugin $camptix */
+		global $camptix;
+
+		$order_info = array(
+			'tickets'  => array(),
+			'quantity' => 0,
+			'total'    => 0,
+		);
+		$total      = $coupon_percentage = $coupon_price = 0;
+
+		// Bailout.
+		if ( empty( $tickets ) ) {
+			return $order_info;
+		}
+
+		// Get coupon.
+		$coupon = get_posts(
+			array(
+				'post_type'   => 'tix_coupon',
+				'post_status' => 'publish',
+				'post_title'  => $coupon_id,
+			)
+		);
+
+		// Get coupon info.
+		if ( ! empty( $coupon ) ) {
+			$coupon_percentage = get_post_meta( $coupon[0]->ID, 'tix_discount_percent', true );
+			$coupon_price      = get_post_meta( $coupon[0]->ID, 'tix_discount_price', true );
+		}
+
+		// Calculate total.
+		foreach ( $tickets as $ticket_id => $count ) {
+			$order_info['tickets'][] = $ticket_id;
+			$order_info['quantity']  += $count;
+
+			$price = get_post_meta( $ticket_id, 'tix_price', true );
+			if ( $coupon_percentage ) {
+				$price -= ( ( $price * $coupon_percentage ) / 100 );
+			} elseif ( $coupon_price ) {
+				$price -= $coupon_price;
+			}
+
+			$total += $price * $count;
+		}
+
+		$order_info['total'] = $total;
+
+		return $order_info;
 	}
 }
 
