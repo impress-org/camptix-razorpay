@@ -76,9 +76,7 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 			array(
 				'razorpay_popup_title' => '',
 				'live_key_id'          => '',
-				'live_key_secret'      => '',
 				'test_key_id'          => '',
-				'test_key_secret'      => '',
 				'sandbox'              => true,
 			)
 		);
@@ -192,16 +190,12 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	 */
 	public function get_merchant_credentials() {
 		$merchant = array(
-			'merchant_id' => $this->options['merchant_id'],
 			'key_id'      => $this->options['test_key_id'],
-			'key_secret'  => $this->options['test_key_secret'],
 		);
 
 		if ( ! $this->options['sandbox'] ) {
 			$merchant = array(
-				'merchant_id' => $this->options['merchant_id'],
 				'key_id'      => $this->options['live_key_id'],
-				'key_secret'  => $this->options['live_key_secret'],
 			);
 		}
 
@@ -273,11 +267,6 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 			array( $this, 'field_text' )
 		);
 
-		$this->add_settings_field_helper(
-			'merchant_id',
-			__( 'Merchant ID', 'camptix-razorpay' ),
-			array( $this, 'field_text' )
-		);
 
 		$this->add_settings_field_helper(
 			'live_key_id',
@@ -286,20 +275,8 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		);
 
 		$this->add_settings_field_helper(
-			'live_key_secret',
-			__( 'Live Key Secret', 'camptix-razorpay' ),
-			array( $this, 'field_text' )
-		);
-
-		$this->add_settings_field_helper(
 			'test_key_id',
 			__( 'Test Key ID', 'camptix-razorpay' ),
-			array( $this, 'field_text' )
-		);
-
-		$this->add_settings_field_helper(
-			'test_key_secret',
-			__( 'Test Key Secret', 'camptix-razorpay' ),
 			array( $this, 'field_text' )
 		);
 
