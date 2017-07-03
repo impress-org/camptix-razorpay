@@ -92,6 +92,7 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		if ( $this->is_gateway_enable() ) {
 			add_action( 'template_redirect', array( $this, 'template_redirect' ) );
 			add_action( 'camptix_attendee_form_additional_info', array( $this, 'add_phone_field' ), 10, 3 );
+			add_filter( 'camptix_register_order_summary_header', array( $this, 'add_order_id_field' ), 10, 3 );
 			add_filter( 'camptix_form_register_complete_attendee_object', array( $this, 'add_attendee_info' ), 10, 3 );
 			add_action( 'camptix_checkout_update_post_meta', array( $this, 'save_attendee_info' ), 10, 2 );
 			add_filter( 'camptix_metabox_attendee_info_additional_rows', array( $this, 'show_attendee_info' ), 10, 2 );
@@ -189,6 +190,39 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 
 
 	/**
+	 * @param $form_heading
+	 *
+	 * @return mixed
+	 */
+	public function add_order_id_field( $form_heading ) {
+		// $api         = $this->get_razjorpay_api();
+		$tickets_info = ! empty( $_POST['tix_tickets_selected'] ) ? array_map( 'esc_attr', $_POST['tix_tickets_selected'] ) : array();
+		$coupon_id    = esc_attr( $_POST['tix_coupon'] );
+
+		// Order info.
+		$order = $this->razorpay_order_info( $tickets_info, $coupon_id );
+
+		// Creates order
+		$api   = $this->get_razjorpay_api();
+		$order = $api->order->create(
+			array(
+				'receipt'         => '123',
+				'amount'          => $order['total'] * 100,
+				'currency'        => 'INR',
+				'payment_capture' => true,
+			)
+		);
+
+		echo sprintf(
+			'<input type="hidden" name="razorpay_order_id" value="%s">',
+			$order->id
+		);
+
+		return $form_heading;
+	}
+
+
+	/**
 	 * Get mechant credentials
 	 *
 	 * @since  0.1
@@ -275,7 +309,6 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 			_( 'Razorpay Popup Title', 'camptix-razorpay' ),
 			array( $this, 'field_text' )
 		);
-
 
 		$this->add_settings_field_helper(
 			'live_key_id',
@@ -405,14 +438,14 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		$this->log( sprintf( 'Running payment_return. Request data attached.' ), null, $_REQUEST );
 		$this->log( sprintf( 'Running payment_return. Server data attached.' ), null, $_SERVER );
 
-		$payment_token = ( isset( $_REQUEST['tix_payment_token'] ) ) ? trim( $_REQUEST['tix_payment_token'] ) : '';
+		$payment_token  = ( isset( $_REQUEST['tix_payment_token'] ) ) ? trim( $_REQUEST['tix_payment_token'] ) : '';
 		$transaction_id = esc_attr( $_GET['transaction_id'] );
 
 		// Bailout.
 		if ( empty( $payment_token ) || empty( $transaction_id ) ) {
 			return;
 		}
-		
+
 		// Get all attendees for order.
 		$attendees = get_posts(
 			array(
@@ -437,12 +470,6 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 
 		// Reset attendees.
 		$attendee = reset( $attendees );
-
-		// Captures a payment.
-		$merchant       = $this->get_merchant_credentials();
-		$api            = new Api( $merchant['key_id'], $merchant['key_secret'] );
-		$api->payment->fetch( $transaction_id )
-		             ->capture( array( 'amount' => ( $this->get_order( $payment_token )['total'] * 100 ) ) );
 
 		// Complete payment
 		$camptix->payment_result( $payment_token, CampTix_Plugin::PAYMENT_STATUS_COMPLETED, $_GET );
@@ -501,7 +528,7 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	 */
 	private function razorpay_order_info( $tickets, $coupon_id ) {
 		/* @var  CampTix_Plugin $camptix */
-		global $camptix;
+		global $camptix, $wpdb;
 
 		$order_info = array(
 			'tickets'  => array(),
@@ -515,19 +542,22 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 			return $order_info;
 		}
 
-		// Get coupon.
-		$coupon = get_posts(
-			array(
-				'post_type'   => 'tix_coupon',
-				'post_status' => 'publish',
-				'post_title'  => $coupon_id,
-			)
-		);
+		// Get coupon detail.
+		if( ! empty( $coupon_id ) ) {
+			// Get coupon.
+			$coupon_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT ID FROM $wpdb->posts WHERE post_title = %s",
+					$coupon_id
+				)
+			);
 
-		// Get coupon info.
-		if ( ! empty( $coupon ) ) {
-			$coupon_percentage = get_post_meta( $coupon[0]->ID, 'tix_discount_percent', true );
-			$coupon_price      = get_post_meta( $coupon[0]->ID, 'tix_discount_price', true );
+			// Get coupon info.
+			if ( ! empty( $coupon_id ) ) {
+				$coupon = get_post( $coupon_id ) ;
+				$coupon_percentage = get_post_meta( $coupon->ID, 'tix_discount_percent', true );
+				$coupon_price      = get_post_meta( $coupon->ID, 'tix_discount_price', true );
+			}
 		}
 
 		// Calculate total.
