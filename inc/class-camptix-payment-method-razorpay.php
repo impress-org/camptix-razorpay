@@ -14,6 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // End if().
 
+
+// Load Razorpay sdk.
+require_once CAMPTIX_RAZORPAY_DIR . 'inc/lib/razorpay-php/Razorpay.php';
+use Razorpay\Api\Api;
+
 class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	/**
 	 * Payment gateway id.
@@ -398,12 +403,13 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		$this->log( sprintf( 'Running payment_return. Server data attached.' ), null, $_SERVER );
 
 		$payment_token = ( isset( $_REQUEST['tix_payment_token'] ) ) ? trim( $_REQUEST['tix_payment_token'] ) : '';
+		$transaction_id = esc_attr( $_GET['transaction_id'] );
 
 		// Bailout.
-		if ( empty( $payment_token ) ) {
+		if ( empty( $payment_token ) || empty( $transaction_id ) ) {
 			return;
 		}
-
+		
 		// Get all attendees for order.
 		$attendees = get_posts(
 			array(
@@ -428,6 +434,12 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 
 		// Reset attendees.
 		$attendee = reset( $attendees );
+
+		// Captures a payment.
+		$merchant       = $this->get_merchant_credentials();
+		$api            = new Api( $merchant['key_id'], $merchant['key_secret'] );
+		$api->payment->fetch( $transaction_id )
+		             ->capture( array( 'amount' => ( $this->get_order( $payment_token )['total'] * 100 ) ) );
 
 		// Complete payment
 		$camptix->payment_result( $payment_token, CampTix_Plugin::PAYMENT_STATUS_COMPLETED, $_GET );
