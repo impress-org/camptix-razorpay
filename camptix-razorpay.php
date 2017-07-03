@@ -75,6 +75,7 @@ class CampTix_RazorPar {
 	 */
 	public function setup_constants() {
 		define( 'CAMPTIX_RAZORPAY_VERSION', 0.2 );
+		define( 'CAMPTIX_RAZORPAY_DIR', plugin_dir_path( __FILE__ ) );
 		define( 'CAMPTIX_RAZORPAY_URL', plugin_dir_url( __FILE__ ) . '/' );
 	}
 
