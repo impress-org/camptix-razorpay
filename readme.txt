@@ -38,5 +38,6 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 
 == Changelog ==
 
-= 0.1 =
+= 1.0.1 =
 * Initial plugin release. Yippee!
+* All the Bug's fixed :)
