@@ -11,9 +11,7 @@ jQuery(document).ready(function ($) {
 	var razorpay_handler = [],
 		$container       = $('#tix'),
 		$form            = $('form', $container),
-		ticket_quantity  = $('.tix_tickets_table td.tix-column-quantity', $container).text(),
-		order_id         = $('input[name="razorpay_order_id"]', $form).val(),
-		receipt_id       = $('input[name="razorpay_receipt_id"]', $form).val();
+		ticket_quantity  = $('.tix_tickets_table td.tix-column-quantity', $container).text();
 
 	/**
 	 * Validate extra attendee information fields.
@@ -140,11 +138,28 @@ jQuery(document).ready(function ($) {
 
 				razorpay_handler = new Razorpay({
 					'key'     : camptix_razorpay_vars.merchant_key_id,
-					'order_id': order_id,
+					'order_id': $response.data.order_id,
 					'name'    : $response.data.popup_title,
 					'image'   : camptix_razorpay_vars.popup.image,
 					// 'description' : '',
 					'handler' : function (response) {
+						response.action = 'verify_payment';
+
+						// Varify payment.
+						$.post(camptix_l10n.ajaxURL, response)
+							.done(function (response) {
+								if (response.success) {
+									window.location.assign($response.data.return_url);
+								} else {
+									window.location.assign($response.data.failed_url);
+								}
+							})
+							.fail(function () {
+								window.location.assign($response.data.failed_url);
+							})
+							.always(function () {
+							});
+
 						// Remove loading animations.
 						// $form.find('.give-loading-animation').hide();
 						// Disable form submit button.
@@ -152,7 +167,7 @@ jQuery(document).ready(function ($) {
 
 						// Submit form after charge token brought back from Razorpay.
 						// Redirect to success page.
-						window.location.assign($response.data.return_url + '&transaction_id=' + order_id + '&receipt_id=' + receipt_id);
+						// window.location.assign($response.data.return_url + '&transaction_id=' + order_id + '&receipt_id=' + receipt_id);
 					},
 
 					// You can add custom data here and fields limited to 15.
