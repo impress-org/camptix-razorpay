@@ -784,8 +784,3 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	}
 }
 
-// @todo:set transaction id in return url
-// @todo: easy function to set and get value from session
-// @todo validate session ticket info and coupon_id when restart again
-
-
