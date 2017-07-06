@@ -413,8 +413,6 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 			return;
 		}
 
-		$receipt_id = $this->get_session_data( 'receipt_id' );
-
 		// Store order in session if not exist.
 		/* @var object $order */
 		if ( ! ( $order = $this->get_session_data( 'order' ) ) ) {
@@ -491,54 +489,17 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		$camptix->log( sprintf( 'Running payment_return. Request data attached.' ), 0, $_REQUEST, "{$this->id}_payment_return" );
 		$camptix->log( sprintf( 'Running payment_return. Server data attached.' ), 0, $_REQUEST, "{$this->id}_payment_return" );
 
-		$payment_token  = ( isset( $_REQUEST['tix_payment_token'] ) ) ? trim( $_REQUEST['tix_payment_token'] ) : '';
+		$payment_token = ( isset( $_REQUEST['tix_payment_token'] ) ) ? trim( $_REQUEST['tix_payment_token'] ) : '';
 
 		// Bailout.
 		if ( empty( $payment_token ) ) {
 			return;
 		}
 
-		// Get all attendees for order.
-		$attendees = get_posts(
-			array(
-				'posts_per_page' => 1,
-				'post_type'      => 'tix_attendee',
-				'post_status'    => array( 'draft', 'pending', 'publish', 'cancel', 'refund', 'failed' ),
-				'meta_query'     => array(
-					array(
-						'key'     => 'tix_payment_token',
-						'compare' => '=',
-						'value'   => $payment_token,
-						'type'    => 'CHAR',
-					),
-				),
-			)
-		);
-
-		// Bailout.
-		if ( empty( $attendees ) ) {
-			return;
-		}
-
-		// Reset attendees.
-		$attendee = reset( $attendees );
+		$this->session_destroy();
 
 		// Complete payment
 		$camptix->payment_result( $payment_token, CampTix_Plugin::PAYMENT_STATUS_COMPLETED, $_GET );
-
-		// Show ticket to attendee.
-		$access_token = get_post_meta( $attendee->ID, 'tix_access_token', true );
-		$url          = add_query_arg( array(
-			'tix_action'       => 'access_tickets',
-			'tix_access_token' => $access_token,
-		), $camptix->get_tickets_url() );
-
-		// Redirect to ticket page.
-		wp_safe_redirect( esc_url_raw( $url . '#tix' ) );
-
-		session_destroy();
-
-		exit();
 	}
 
 	/**
@@ -558,16 +519,16 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		$camptix->log( sprintf( 'Running payment_return. Server data attached.' ), 0, $_REQUEST, "{$this->id}_payment_return" );
 
 		$payment_token = ( isset( $_REQUEST['tix_payment_token'] ) ) ? trim( $_REQUEST['tix_payment_token'] ) : '';
-		$receipt_id     = esc_attr( $_GET['receipt_id'] );
+		$receipt_id    = esc_attr( $_GET['receipt_id'] );
 
 		if ( ! $payment_token ) {
 			die( 'empty token' );
 		}
 
-		session_destroy();
+		$this->session_destroy();
 
-		// Set the associated attendees to cancelled.
-		return $camptix->payment_result( $payment_token, CampTix_Plugin::PAYMENT_STATUS_FAILED );
+		// Failed Payment.
+		return $camptix->payment_result( $payment_token, CampTix_Plugin::PAYMENT_STATUS_FAILED, $_GET );
 	}
 
 	/**
@@ -682,6 +643,20 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	}
 
 	/**
+	 * Start session.
+	 *
+	 * @since  0.2
+	 * @access private
+	 */
+	private function session_destroy() {
+		// Unset all of the session variables.
+		$_SESSION = array();
+
+		// Finally, destroy the session.
+		session_destroy();
+	}
+
+	/**
 	 * Getter and setter for session data
 	 *
 	 * @since  0.2
@@ -778,6 +753,12 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 		) {
 			wp_send_json_error();
 		}
+
+		$this->session_start();
+
+		// Get order id from session.
+		$order                      = $this->get_session_data( 'order' );
+		$_POST['razorpay_order_id'] = $order->id;
 
 		/* @var  \Razorpay\Api\Utility $utility */
 		$api = $this->get_razjorpay( 'api' );
