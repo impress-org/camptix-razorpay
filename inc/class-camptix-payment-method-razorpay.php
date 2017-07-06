@@ -7,7 +7,7 @@
  * @since          0.1
  * @package        CampTix
  * @category       Class
- * @author         _KDC-Labs
+ * @author         wordimpress
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
