@@ -143,23 +143,6 @@ jQuery(document).ready(function ($) {
 					'image'   : camptix_razorpay_vars.popup.image,
 					// 'description' : '',
 					'handler' : function (response) {
-						response.action = 'verify_payment';
-
-						// Varify payment.
-						$.post(camptix_l10n.ajaxURL, response)
-							.done(function (response) {
-								if (response.success) {
-									window.location.assign($response.data.return_url);
-								} else {
-									window.location.assign($response.data.failed_url);
-								}
-							})
-							.fail(function () {
-								window.location.assign($response.data.failed_url);
-							})
-							.always(function () {
-							});
-
 						// Remove loading animations.
 						// $form.find('.give-loading-animation').hide();
 						// Disable form submit button.
@@ -167,7 +150,7 @@ jQuery(document).ready(function ($) {
 
 						// Submit form after charge token brought back from Razorpay.
 						// Redirect to success page.
-						// window.location.assign($response.data.return_url + '&transaction_id=' + order_id + '&receipt_id=' + receipt_id);
+						window.location.assign($response.data.redirect + '&razorpay_payment_id=' + response.razorpay_payment_id + '&razorpay_signature=' + response.razorpay_signature );
 					},
 
 					// You can add custom data here and fields limited to 15.
