@@ -3,7 +3,7 @@
  * Plugin Name: CampTix RazorPay Payment Gateway
  * Plugin URI: https://github.com/WordImpress/CampTix-Razorpay
  * Description: RazorPay Payment Gateway for CampTix
- * Author: WordImpress
+ * Author: arvindsinghu
  * Author URI: https://wordimpress.com:
  * Version: 0.2
  * Text Domain: camptix-razorpay
