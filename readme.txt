@@ -1,4 +1,4 @@
-=== CampTix RazorPay Payment Gateway ===
+=== CampTix Razorpay Payment Gateway ===
 Contributors: arvindsinghu, ravinderk, wordimpress
 Tags: camptix, razorpay, gateway
 Requires at least: 4.2
