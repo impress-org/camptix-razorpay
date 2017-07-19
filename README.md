@@ -1,4 +1,4 @@
-# CampTix Razorpay Payment Gatewayy #
+# CampTix Razorpay Payment Gateway #
 
 Razorpay Gateway Add-on for Camptix.
 
