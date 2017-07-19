@@ -120,7 +120,7 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 
 		if ( $receipt_id = get_post_meta( $attendee->ID, 'tix_receipt_id', true ) ) {
 			$rows[] = array(
-				__( 'Razorpay Receipt ID', 'camptix-razorpay-' ),
+				__( 'Razorpay Receipt ID', 'camptix-razorpay' ),
 				$receipt_id,
 			);
 		}
@@ -313,7 +313,7 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	public function payment_settings_fields() {
 		$this->add_settings_field_helper(
 			'razorpay_popup_title',
-			_( 'Razorpay Popup Title', 'camptix-razorpay' ),
+			__( 'Razorpay Popup Title', 'camptix-razorpay' ),
 			array( $this, 'field_text' )
 		);
 
