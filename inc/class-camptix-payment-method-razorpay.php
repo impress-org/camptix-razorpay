@@ -609,7 +609,7 @@ class CampTix_Payment_Method_RazorPay extends CampTix_Payment_Method {
 	 * key:value ticket_id:quantity
 	 *
 	 * @since  0.2
-	 * @access pricate
+	 * @access private
 	 *
 	 * @param array  $tickets
 	 * @param string $coupon_id
