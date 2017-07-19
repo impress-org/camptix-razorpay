@@ -8,7 +8,7 @@
  * Version: 0.3
  * Text Domain: camptix-razorpay
  * Domain Path: /languages
- * GitHub Plugin URI: https://github.com/WordImpress/Give-Razorpay
+ * GitHub Plugin URI: https://github.com/WordImpress/CampTix-Razorpay/
  */
 
 // Exit if access directly.
