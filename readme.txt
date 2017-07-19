@@ -4,7 +4,7 @@ Tags: camptix, razorpay, gateway
 Requires at least: 4.2
 Donate link: https://givewp.com/
 Tested up to: 4.7.3
-Stable tag: 1.0.1
+Stable tag: 0.4
 License: GPLv3
 License URI: https://opensource.org/licenses/GPL-3.0
 
@@ -39,6 +39,6 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 
 == Changelog ==
 
-= 1.0.1 =
+= 0.4 =
 * Initial plugin release. Yippee!
 * All the Bug's fixed :)

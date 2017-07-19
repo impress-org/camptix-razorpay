@@ -5,7 +5,7 @@
  * Description: RazorPay Payment Gateway for CampTix
  * Author: WordImpress
  * Author URI: https://wordimpress.com:
- * Version: 0.2
+ * Version: 0.4
  * Text Domain: camptix-razorpay
  * Domain Path: /languages
  * GitHub Plugin URI: https://github.com/WordImpress/CampTix-Razorpay/

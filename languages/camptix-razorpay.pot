@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CampTix-Razorpay\n"
-"Report-Msgid-Bugs-To: https://github.com/WordImpress/CampTix-Razorpay/issues/new\n"
+"Report-Msgid-Bugs-To: https://github.com/ravinderk/CampTix-Razorpay/issues/new\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,42 +16,50 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: camptix-razorpay.php:105
+#: camptix-razorpay.php:107
 msgid "Indian Rupees"
 msgstr ""
 
-#: inc/class-camptix-payment-method-razorpay.php:111, inc/class-camptix-payment-method-razorpay.php:173
+#: inc/class-camptix-payment-method-razorpay.php:116, inc/class-camptix-payment-method-razorpay.php:185
 msgid "Phone Number"
 msgstr ""
 
-#: inc/class-camptix-payment-method-razorpay.php:253
+#: inc/class-camptix-payment-method-razorpay.php:123
+msgid "Razorpay Receipt ID"
+msgstr ""
+
+#: inc/class-camptix-payment-method-razorpay.php:297
 msgid "Please fill in all required fields."
 msgstr ""
 
-#: inc/class-camptix-payment-method-razorpay.php:278
-msgid "Merchant ID"
+#: inc/class-camptix-payment-method-razorpay.php:316
+msgid "Razorpay Popup Title"
 msgstr ""
 
-#: inc/class-camptix-payment-method-razorpay.php:284
+#: inc/class-camptix-payment-method-razorpay.php:322
 msgid "Live Key ID"
 msgstr ""
 
-#: inc/class-camptix-payment-method-razorpay.php:290
+#: inc/class-camptix-payment-method-razorpay.php:328
 msgid "Live Key Secret"
 msgstr ""
 
-#: inc/class-camptix-payment-method-razorpay.php:296
+#: inc/class-camptix-payment-method-razorpay.php:334
 msgid "Test Key ID"
 msgstr ""
 
-#: inc/class-camptix-payment-method-razorpay.php:302
+#: inc/class-camptix-payment-method-razorpay.php:340
 msgid "Test Key Secret"
 msgstr ""
 
-#: inc/class-camptix-payment-method-razorpay.php:308
+#: inc/class-camptix-payment-method-razorpay.php:346
 msgid "Sandbox Mode"
 msgstr ""
 
-#: inc/class-camptix-payment-method-razorpay.php:310
+#: inc/class-camptix-payment-method-razorpay.php:348
 msgid "The RazorPay Sandbox is a way to test payments without using real accounts and transactions. When enabled it will use sandbox merchant details instead of the ones defined above."
+msgstr ""
+
+#: inc/class-camptix-payment-method-razorpay.php:476
+msgid "Empty Token"
 msgstr ""
