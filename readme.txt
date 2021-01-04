@@ -1,5 +1,5 @@
-=== CampTix RazorPay Payment Gateway ===
-Contributors: ravinderk, arvindsinghu, wordimpress
+=== CampTix Razorpay Payment Gateway ===
+Contributors: arvindsinghu, ravinderk, wordimpress
 Tags: camptix, razorpay, gateway
 Requires at least: 4.2
 Donate link: https://givewp.com/

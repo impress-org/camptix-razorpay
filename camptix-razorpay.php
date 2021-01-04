@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: CampTix RazorPay Payment Gateway
+ * Plugin Name: CampTix Razorpay Payment Gateway
  * Plugin URI: https://github.com/WordImpress/CampTix-Razorpay
  * Description: RazorPay Payment Gateway for CampTix
  * Author: WordImpress
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-class CampTix_RazorPar {
+class CampTix_Razorpay {
 	/**
 	 * Instance.
 	 *
@@ -33,7 +33,7 @@ class CampTix_RazorPar {
 	 * @since
 	 * @access private
 	 *
-	 * @param CampTix_RazorPar .
+	 * @param CampTix_Razorpay .
 	 */
 	private function __construct() {
 	}
@@ -87,7 +87,7 @@ class CampTix_RazorPar {
 	 * @access public
 	 */
 	public function setup_hooks() {
-		add_filter( 'camptix_currencies', array( $this, 'add_inr_currency' ) );
+		add_filter( 'camptix_currencies', array( $this, 'razorpay_add_inr_currency' ) );
 		add_action( 'camptix_load_addons', array( $this, 'load_payment_method' ) );
 	}
 
@@ -101,7 +101,7 @@ class CampTix_RazorPar {
 	 *
 	 * @return mixed
 	 */
-	public function add_inr_currency( $currencies ) {
+	public function razorpay_add_inr_currency( $currencies ) {
 		if ( ! in_array( 'INR', $currencies ) ) {
 			$currencies['INR'] = array(
 				'label'  => __( 'Indian Rupees', 'camptix-razorpay' ),
@@ -113,18 +113,18 @@ class CampTix_RazorPar {
 	}
 
 	/**
-	 * Load the RazorPay Payment Method
+	 * Load the Razorpay Payment Method
 	 *
 	 * @since  0.1
 	 * @access public
 	 */
 	function load_payment_method() {
-		if ( ! class_exists( 'CampTix_Payment_Method_RazorPay' ) ) {
+		if ( ! class_exists( 'CampTix_Payment_Method_Razorpay' ) ) {
 			require_once plugin_dir_path( __FILE__ ) . 'inc/class-camptix-payment-method-razorpay.php';
 		}
-		camptix_register_addon( 'CampTix_Payment_Method_RazorPay' );
+		camptix_register_addon( 'CampTix_Payment_Method_Razorpay' );
 	}
 }
 
 // Initialize plugin.
-CampTix_RazorPar::get_instance()->setup();
+CampTix_Razorpay::get_instance()->setup();
